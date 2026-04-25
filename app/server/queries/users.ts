@@ -1,7 +1,7 @@
 import { eq, desc, sql } from "drizzle-orm";
-import * as schema from "@db/schema";
-import type { InsertUser } from "@db/schema";
-import { getDb } from "./connection";
+import * as schema from "../../db/schema.js";
+import type { InsertUser } from "../../db/schema.js";
+import { getDb } from "./connection.js";
 
 export async function findUserByPhone(phone: string) {
   const rows = await getDb()
@@ -56,7 +56,8 @@ export async function countUsers() {
 }
 
 // Legacy compatibility stubs for framework
-export async function findUserByUnionId(_unionId: string) {
+export async function findUserByUnionId(unionId: string) {
+  void unionId;
   const users = await listUsers(1, 0);
   return users[0] || null;
 }

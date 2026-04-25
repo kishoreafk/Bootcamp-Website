@@ -2,14 +2,14 @@ import type { Context } from "hono";
 import { setCookie } from "hono/cookie";
 import * as jose from "jose";
 import * as cookie from "cookie";
-import { env } from "../lib/env";
-import { getSessionCookieOptions } from "../lib/cookies";
-import { Session } from "@contracts/constants";
-import { Errors } from "@contracts/errors";
-import { signSessionToken, verifySessionToken } from "./session";
-import { users as kimiUsers } from "./platform";
-import { findUserByUnionId, upsertUser } from "../queries/users";
-import type { TokenResponse } from "./types";
+import { Session } from "../../contracts/constants.js";
+import { Errors } from "../../contracts/errors.js";
+import { env } from "../lib/env.js";
+import { getSessionCookieOptions } from "../lib/cookies.js";
+import { findUserByUnionId, upsertUser } from "../queries/users.js";
+import { signSessionToken, verifySessionToken } from "./session.js";
+import { users as kimiUsers } from "./platform.js";
+import type { TokenResponse } from "./types.js";
 
 async function exchangeAuthCode(
   code: string,
@@ -37,14 +37,19 @@ async function exchangeAuthCode(
   return resp.json() as Promise<TokenResponse>;
 }
 
-const jwks = jose.createRemoteJWKSet(
-  new URL(`${env.kimiAuthUrl}/api/.well-known/jwks.json`),
-);
+let jwks: ReturnType<typeof jose.createRemoteJWKSet> | undefined;
+
+function getJwks() {
+  jwks ??= jose.createRemoteJWKSet(
+    new URL(`${env.kimiAuthUrl}/api/.well-known/jwks.json`),
+  );
+  return jwks;
+}
 
 async function verifyAccessToken(
   accessToken: string,
 ): Promise<{ userId: string; clientId: string }> {
-  const { payload } = await jose.jwtVerify(accessToken, jwks);
+  const { payload } = await jose.jwtVerify(accessToken, getJwks());
   const userId = payload.user_id as string;
   const clientId = payload.client_id as string;
   if (!userId) {

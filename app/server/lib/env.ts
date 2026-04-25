@@ -15,5 +15,6 @@ export const env = {
   databaseUrl: required("DATABASE_URL"),
   kimiAuthUrl: required("KIMI_AUTH_URL"),
   kimiOpenUrl: required("KIMI_OPEN_URL"),
+  jwtSecret: required("JWT_SECRET"),
   ownerUnionId: process.env.OWNER_UNION_ID ?? "",
 };

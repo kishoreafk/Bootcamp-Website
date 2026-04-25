@@ -1,6 +1,6 @@
 import { eq, desc, and } from "drizzle-orm";
-import * as schema from "@db/schema";
-import { getDb } from "./connection";
+import * as schema from "../../db/schema.js";
+import { getDb } from "./connection.js";
 
 export async function createDesign(data: {
   garmentId: number;

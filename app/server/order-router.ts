@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { createRouter, authedQuery } from "./middleware";
-import { createOrder, findOrderById, listOrdersByUser } from "./queries/orders";
-import { getSelectedDesign } from "./queries/designs";
-import { findGarmentById } from "./queries/garments";
+import { createRouter, authedQuery } from "./middleware.js";
+import { createOrder, findOrderById, listOrdersByUser } from "./queries/orders.js";
+import { getSelectedDesign } from "./queries/designs.js";
+import { findGarmentById } from "./queries/garments.js";
 
 export const orderRouter = createRouter({
   create: authedQuery
@@ -26,7 +26,7 @@ export const orderRouter = createRouter({
       const design = await getSelectedDesign(ctx.user.id);
       if (!design || design.id !== input.designId) {
         // Allow if design exists
-        const designs = await import("./queries/designs").then((m) => m.listDesignsByUser(ctx.user.id));
+        const designs = await import("./queries/designs.js").then((m) => m.listDesignsByUser(ctx.user.id));
         const found = designs.find((d) => d.id === input.designId);
         if (!found) {
           throw new TRPCError({ code: "NOT_FOUND", message: "Design not found" });

@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useNavigate } from "react-router";
-import { trpc } from "@/providers/trpc";
+import { trpc } from "@/providers/trpc-client";
 import { useAuth } from "@/hooks/useAuth";
 import {
   ArrowLeft,
@@ -43,11 +43,22 @@ export default function Designs() {
   const [isGenerating, setIsGenerating] = useState(true);
   const navigate = useNavigate();
   const { user } = useAuth();
+  const hasRequestedGeneration = useRef(false);
 
   const garmentId = Number(sessionStorage.getItem("currentGarmentId")) || 0;
   const garmentName = sessionStorage.getItem("currentGarmentName") || "Your Garment";
-  const preferences = JSON.parse(sessionStorage.getItem("designPreferences") || "[]");
-  const styleDirection = JSON.parse(sessionStorage.getItem("styleDirection") || "[]");
+  const preferences = useMemo(
+    () => JSON.parse(sessionStorage.getItem("designPreferences") || "[]") as string[],
+    [],
+  );
+  const styleDirection = useMemo(
+    () => JSON.parse(sessionStorage.getItem("styleDirection") || "[]") as string[],
+    [],
+  );
+  const colorPreference = useMemo(
+    () => sessionStorage.getItem("colorPreference") || "",
+    [],
+  );
 
   const generateMutation = trpc.design.generate.useMutation({
     onSuccess: (data) => {
@@ -72,15 +83,16 @@ export default function Designs() {
   });
 
   useEffect(() => {
-    if (user && garmentId && isGenerating) {
+    if (user && garmentId && isGenerating && !hasRequestedGeneration.current) {
+      hasRequestedGeneration.current = true;
       generateMutation.mutate({
         garmentId,
         preferences,
         styleDirection: styleDirection.join(", "),
-        colorPreference: sessionStorage.getItem("colorPreference") || "",
+        colorPreference,
       });
     }
-  }, [user, garmentId]);
+  }, [colorPreference, garmentId, generateMutation, isGenerating, preferences, styleDirection, user]);
 
   const toggleSelect = (index: number) => {
     setSelectedDesigns((prev) =>

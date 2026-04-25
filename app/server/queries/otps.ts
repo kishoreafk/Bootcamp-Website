@@ -1,6 +1,6 @@
 import { eq, gt, and, desc } from "drizzle-orm";
-import * as schema from "@db/schema";
-import { getDb } from "./connection";
+import * as schema from "../../db/schema.js";
+import { getDb } from "./connection.js";
 
 export async function createOTP(phone: string, code: string, expiresAt: Date) {
   const result = await getDb()

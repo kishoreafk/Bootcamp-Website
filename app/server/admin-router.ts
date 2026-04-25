@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { createRouter, adminQuery } from "./middleware";
-import { countUsers, listUsers } from "./queries/users";
-import { countOrders, countOrdersByStatus, listAllOrders } from "./queries/orders";
-import { listAllDesigns } from "./queries/designs";
+import { createRouter, adminQuery } from "./middleware.js";
+import { countUsers, listUsers } from "./queries/users.js";
+import { countOrders, countOrdersByStatus, listAllOrders } from "./queries/orders.js";
+import { listAllDesigns } from "./queries/designs.js";
 
 export const adminRouter = createRouter({
   getStats: adminQuery.query(async () => {
@@ -69,7 +69,7 @@ export const adminRouter = createRouter({
   updateOrderStatus: adminQuery
     .input(z.object({ id: z.number(), status: z.string() }))
     .mutation(async ({ input }) => {
-      const { updateOrderStatus } = await import("./queries/orders");
+      const { updateOrderStatus } = await import("./queries/orders.js");
       const order = await updateOrderStatus(input.id, input.status);
       return order;
     }),

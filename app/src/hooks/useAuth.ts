@@ -1,4 +1,4 @@
-import { trpc } from "@/providers/trpc";
+import { trpc } from "@/providers/trpc-client";
 import { useCallback, useMemo } from "react";
 
 export function useAuth() {

@@ -1,14 +1,19 @@
 import jwt from "jsonwebtoken";
+import { env } from "./env.js";
 
-const JWT_SECRET = process.env.JWT_SECRET || "weaver-secret-key-change-in-production";
+type AuthTokenPayload = {
+  userId: number;
+  phone: string;
+  role: string;
+};
 
-export function signToken(payload: { userId: number; phone: string; role: string }) {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: "7d" });
+export function signToken(payload: AuthTokenPayload) {
+  return jwt.sign(payload, env.jwtSecret, { expiresIn: "7d" });
 }
 
-export function verifyToken(token: string): { userId: number; phone: string; role: string } | null {
+export function verifyToken(token: string): AuthTokenPayload | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as { userId: number; phone: string; role: string };
+    return jwt.verify(token, env.jwtSecret) as AuthTokenPayload;
   } catch {
     return null;
   }

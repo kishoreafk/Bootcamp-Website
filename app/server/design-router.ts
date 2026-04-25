@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { createRouter, authedQuery } from "./middleware";
-import { createDesign, listDesignsByUser, listDesignsByGarment, selectDesign, getSelectedDesign } from "./queries/designs";
-import { findGarmentById } from "./queries/garments";
+import { createRouter, authedQuery } from "./middleware.js";
+import { createDesign, listDesignsByUser, listDesignsByGarment, selectDesign, getSelectedDesign } from "./queries/designs.js";
+import { findGarmentById } from "./queries/garments.js";
 
 const MOCK_DESIGNS = [
   {

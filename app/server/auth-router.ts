@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { createRouter, publicQuery, authedQuery } from "./middleware";
-import { createOTP, findValidOTP, markOTPVerified } from "./queries/otps";
-import { findUserByPhone, createUser, findUserById } from "./queries/users";
-import { signToken, verifyToken } from "./lib/jwt";
+import { createRouter, publicQuery, authedQuery } from "./middleware.js";
+import { createOTP, findValidOTP, markOTPVerified } from "./queries/otps.js";
+import { findUserByPhone, createUser, findUserById } from "./queries/users.js";
+import { signToken, verifyToken } from "./lib/jwt.js";
 
 export const authRouter = createRouter({
   sendOTP: publicQuery

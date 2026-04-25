@@ -1,7 +1,7 @@
 import type { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
-import type { User } from "@db/schema";
-import { verifyToken } from "./lib/jwt";
-import { findUserById } from "./queries/users";
+import type { User } from "../db/schema.js";
+import { verifyToken } from "./lib/jwt.js";
+import { findUserById } from "./queries/users.js";
 
 export type TrpcContext = {
   req: Request;

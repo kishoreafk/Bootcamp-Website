@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router";
-import { trpc } from "@/providers/trpc";
+import { trpc } from "@/providers/trpc-client";
 import { ArrowLeft, RefreshCw } from "lucide-react";
 
 export default function VerifyOTP() {

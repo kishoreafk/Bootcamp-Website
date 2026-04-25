@@ -1,6 +1,6 @@
 import { serve } from "@hono/node-server";
-import app from "./app";
-import { serveStaticFiles } from "./lib/vite";
+import app from "./app.js";
+import { serveStaticFiles } from "./lib/vite.js";
 
 serveStaticFiles(app);
 

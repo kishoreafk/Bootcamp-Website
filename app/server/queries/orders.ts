@@ -1,6 +1,6 @@
 import { eq, desc, sql } from "drizzle-orm";
-import * as schema from "@db/schema";
-import { getDb } from "./connection";
+import * as schema from "../../db/schema.js";
+import { getDb } from "./connection.js";
 
 export async function createOrder(data: {
   userId: number;

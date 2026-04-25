@@ -1,10 +1,10 @@
-import { authRouter } from "./auth-router";
-import { userRouter } from "./user-router";
-import { garmentRouter } from "./garment-router";
-import { designRouter } from "./design-router";
-import { orderRouter } from "./order-router";
-import { adminRouter } from "./admin-router";
-import { createRouter, publicQuery } from "./middleware";
+import { authRouter } from "./auth-router.js";
+import { userRouter } from "./user-router.js";
+import { garmentRouter } from "./garment-router.js";
+import { designRouter } from "./design-router.js";
+import { orderRouter } from "./order-router.js";
+import { adminRouter } from "./admin-router.js";
+import { createRouter, publicQuery } from "./middleware.js";
 
 export const appRouter = createRouter({
   ping: publicQuery.query(() => ({ ok: true, ts: Date.now() })),

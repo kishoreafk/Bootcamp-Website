@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { createRouter, authedQuery } from "./middleware";
-import { createGarment, findGarmentById, listGarmentsByUser, deleteGarment } from "./queries/garments";
+import { createRouter, authedQuery } from "./middleware.js";
+import { createGarment, findGarmentById, listGarmentsByUser, deleteGarment } from "./queries/garments.js";
 
 export const garmentRouter = createRouter({
   create: authedQuery

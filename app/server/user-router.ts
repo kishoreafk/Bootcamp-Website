@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { createRouter, authedQuery } from "./middleware";
-import { findUserById, updateUser } from "./queries/users";
+import { createRouter, authedQuery } from "./middleware.js";
+import { findUserById, updateUser } from "./queries/users.js";
 
 export const userRouter = createRouter({
   createProfile: authedQuery

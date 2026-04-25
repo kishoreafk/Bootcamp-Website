@@ -117,11 +117,10 @@ function AuthLayoutContent({
   const activeMenuItem = menuItems.find(item => item.path === location.pathname);
   const isMobile = useIsMobile();
 
-  useEffect(() => {
-    if (isCollapsed) {
-      setIsResizing(false);
-    }
-  }, [isCollapsed]);
+  const handleToggleSidebar = () => {
+    setIsResizing(false);
+    toggleSidebar();
+  };
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -138,7 +137,7 @@ function AuthLayoutContent({
       setIsResizing(false);
     };
 
-    if (isResizing) {
+    if (isResizing && !isCollapsed) {
       document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("mouseup", handleMouseUp);
       document.body.style.cursor = "col-resize";
@@ -151,7 +150,7 @@ function AuthLayoutContent({
       document.body.style.cursor = "";
       document.body.style.userSelect = "";
     };
-  }, [isResizing, setSidebarWidth]);
+  }, [isCollapsed, isResizing, setSidebarWidth]);
 
   return (
     <>
@@ -164,7 +163,7 @@ function AuthLayoutContent({
           <SidebarHeader className="h-16 justify-center">
             <div className="flex items-center gap-3 px-2 transition-all w-full">
               <button
-                onClick={toggleSidebar}
+                onClick={handleToggleSidebar}
                 className="h-8 w-8 flex items-center justify-center hover:bg-accent rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring shrink-0"
                 aria-label="Toggle navigation"
               >

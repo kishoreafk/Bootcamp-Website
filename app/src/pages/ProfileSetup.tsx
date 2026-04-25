@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { trpc } from "@/providers/trpc";
+import { trpc } from "@/providers/trpc-client";
 import { useAuth } from "@/hooks/useAuth";
 import { ArrowRight } from "lucide-react";
 
