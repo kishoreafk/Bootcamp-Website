@@ -17,12 +17,6 @@ function required(name: string): string {
 }
 
 export const env = {
-  get appId() {
-    return required("APP_ID");
-  },
-  get appSecret() {
-    return required("APP_SECRET");
-  },
   get isProduction() {
     return isProduction();
   },
@@ -32,16 +26,7 @@ export const env = {
   get databaseUrl() {
     return required("DATABASE_URL");
   },
-  get kimiAuthUrl() {
-    return required("KIMI_AUTH_URL");
-  },
-  get kimiOpenUrl() {
-    return required("KIMI_OPEN_URL");
-  },
   get jwtSecret() {
     return required("JWT_SECRET");
-  },
-  get ownerUnionId() {
-    return process.env.OWNER_UNION_ID ?? "";
   },
 };

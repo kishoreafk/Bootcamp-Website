@@ -10,7 +10,6 @@ import {
   findDemoUserByPhone,
   listDemoUsers,
   updateDemoUser,
-  upsertDemoUser,
 } from "./demo-store.js";
 
 export async function findUserByPhone(phone: string) {
@@ -88,34 +87,4 @@ export async function countUsers() {
     .select({ count: sql`count(*)` })
     .from(schema.users);
   return Number(result[0]?.count || 0);
-}
-
-// Legacy compatibility stubs for framework
-export async function findUserByUnionId(unionId: string) {
-  void unionId;
-  const users = await listUsers(1, 0);
-  return users[0] || null;
-}
-
-export async function upsertUser(data: Record<string, unknown>) {
-  if (env.isDemoMode) {
-    await upsertDemoUser(data);
-    return;
-  }
-
-  const cleanData: Record<string, unknown> = {};
-  const validKeys = ["id", "phone", "name", "stylePreference", "preferredFit", "sustainabilityPriority", "role", "createdAt", "updatedAt"];
-  for (const key of Object.keys(data)) {
-    if (validKeys.includes(key)) {
-      cleanData[key] = data[key];
-    }
-  }
-  if (cleanData.phone) {
-    const existing = await findUserByPhone(cleanData.phone as string);
-    if (existing) {
-      await updateUser(existing.id, cleanData as Partial<InsertUser>);
-      return;
-    }
-  }
-  await getDb().insert(schema.users).values(cleanData as InsertUser);
 }

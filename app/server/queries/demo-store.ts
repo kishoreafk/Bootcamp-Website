@@ -153,23 +153,6 @@ export async function countDemoUsers() {
   return users.length;
 }
 
-export async function upsertDemoUser(data: Record<string, unknown>) {
-  const phone = typeof data.phone === "string" ? data.phone : "demo-oauth-user";
-  const existing = users.find((user) => user.phone === phone);
-
-  if (existing) {
-    await updateDemoUser(existing.id, {
-      name: typeof data.name === "string" ? data.name : existing.name,
-    });
-    return;
-  }
-
-  createUserRow({
-    phone,
-    name: typeof data.name === "string" ? data.name : null,
-  });
-}
-
 export async function createDemoGarment(data: {
   userId: number;
   name: string;
