@@ -9,8 +9,8 @@ export default function Login() {
   const navigate = useNavigate();
 
   const sendOTP = trpc.auth.sendOTP.useMutation({
-    onSuccess: () => {
-      navigate("/verify-otp", { state: { phone } });
+    onSuccess: (data) => {
+      navigate("/verify-otp", { state: { phone, message: data.message } });
     },
     onError: (err) => {
       setError(err.message);

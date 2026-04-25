@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { env } from "./env.js";
 
-type AuthTokenPayload = {
+export type AuthTokenPayload = {
   userId: number;
   phone: string;
   role: string;

@@ -4,15 +4,22 @@ import { createRouter, publicQuery, authedQuery } from "./middleware.js";
 import { createOTP, findValidOTP, markOTPVerified } from "./queries/otps.js";
 import { findUserByPhone, createUser, findUserById } from "./queries/users.js";
 import { signToken, verifyToken } from "./lib/jwt.js";
+import { env } from "./lib/env.js";
+import { DEMO_OTP_CODE, ensureDemoUserFromToken } from "./queries/demo-store.js";
 
 export const authRouter = createRouter({
   sendOTP: publicQuery
     .input(z.object({ phone: z.string().min(5).max(20) }))
     .mutation(async ({ input }) => {
-      const code = "123456"; // Demo: always 123456
+      const code = DEMO_OTP_CODE; // Demo: always 123456
       const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
       await createOTP(input.phone, code, expiresAt);
-      return { success: true, message: "Verification code sent" };
+      return {
+        success: true,
+        message: env.isDemoMode
+          ? `Verification code sent. Use ${DEMO_OTP_CODE} for this demo.`
+          : "Verification code sent",
+      };
     }),
 
   verifyOTP: publicQuery
@@ -65,7 +72,9 @@ export const authRouter = createRouter({
     const payload = verifyToken(authHeader);
     if (!payload) return null;
 
-    const user = await findUserById(payload.userId);
+    const user =
+      (await findUserById(payload.userId)) ??
+      (env.isDemoMode ? ensureDemoUserFromToken(payload) : undefined);
     return user || null;
   }),
 

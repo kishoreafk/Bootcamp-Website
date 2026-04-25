@@ -10,7 +10,9 @@ export default function VerifyOTP() {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const navigate = useNavigate();
   const location = useLocation();
-  const phone = (location.state as { phone?: string })?.phone || "";
+  const routeState = location.state as { phone?: string; message?: string } | null;
+  const phone = routeState?.phone || "";
+  const [notice, setNotice] = useState(routeState?.message || "");
 
   useEffect(() => {
     if (!phone) {
@@ -46,9 +48,10 @@ export default function VerifyOTP() {
   });
 
   const sendOTP = trpc.auth.sendOTP.useMutation({
-    onSuccess: () => {
+    onSuccess: (data) => {
       setResendTimer(30);
       setError("");
+      setNotice(data.message);
     },
   });
 
@@ -106,6 +109,11 @@ export default function VerifyOTP() {
         >
           We sent a 6-digit code to {phone}
         </p>
+        {notice && (
+          <p className="font-body text-sm mt-3" style={{ color: "#7a7a5e" }}>
+            {notice}
+          </p>
+        )}
 
         <div className="mt-10 flex gap-3 justify-center">
           {digits.map((digit, index) => (

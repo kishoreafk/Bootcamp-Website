@@ -1,6 +1,16 @@
 import { eq, desc, sql } from "drizzle-orm";
 import * as schema from "../../db/schema.js";
+import { env } from "../lib/env.js";
 import { getDb } from "./connection.js";
+import {
+  countDemoOrders,
+  countDemoOrdersByStatus,
+  createDemoOrder,
+  findDemoOrderById,
+  listAllDemoOrders,
+  listDemoOrdersByUser,
+  updateDemoOrderStatus,
+} from "./demo-store.js";
 
 export async function createOrder(data: {
   userId: number;
@@ -10,6 +20,10 @@ export async function createOrder(data: {
   status?: string;
   estimatedDelivery?: string;
 }) {
+  if (env.isDemoMode) {
+    return createDemoOrder(data);
+  }
+
   const result = await getDb()
     .insert(schema.orders)
     .values({
@@ -25,6 +39,10 @@ export async function createOrder(data: {
 }
 
 export async function findOrderById(id: number) {
+  if (env.isDemoMode) {
+    return findDemoOrderById(id);
+  }
+
   const rows = await getDb()
     .select()
     .from(schema.orders)
@@ -34,6 +52,10 @@ export async function findOrderById(id: number) {
 }
 
 export async function listOrdersByUser(userId: number) {
+  if (env.isDemoMode) {
+    return listDemoOrdersByUser(userId);
+  }
+
   return getDb()
     .select()
     .from(schema.orders)
@@ -42,6 +64,10 @@ export async function listOrdersByUser(userId: number) {
 }
 
 export async function listAllOrders(limit = 50, offset = 0) {
+  if (env.isDemoMode) {
+    return listAllDemoOrders(limit, offset);
+  }
+
   return getDb()
     .select()
     .from(schema.orders)
@@ -51,6 +77,10 @@ export async function listAllOrders(limit = 50, offset = 0) {
 }
 
 export async function updateOrderStatus(id: number, status: string) {
+  if (env.isDemoMode) {
+    return updateDemoOrderStatus(id, status);
+  }
+
   await getDb()
     .update(schema.orders)
     .set({ status })
@@ -59,6 +89,10 @@ export async function updateOrderStatus(id: number, status: string) {
 }
 
 export async function countOrders() {
+  if (env.isDemoMode) {
+    return countDemoOrders();
+  }
+
   const result = await getDb()
     .select({ count: sql`count(*)` })
     .from(schema.orders);
@@ -66,6 +100,10 @@ export async function countOrders() {
 }
 
 export async function countOrdersByStatus(status: string) {
+  if (env.isDemoMode) {
+    return countDemoOrdersByStatus(status);
+  }
+
   const result = await getDb()
     .select({ count: sql`count(*)` })
     .from(schema.orders)

@@ -37,9 +37,11 @@ const MOCK_DESIGNS = [
   },
 ];
 
+type DesignCard = (typeof MOCK_DESIGNS)[number] & { id?: number };
+
 export default function Designs() {
   const [selectedDesigns, setSelectedDesigns] = useState<number[]>([]);
-  const [generatedDesigns, setGeneratedDesigns] = useState<typeof MOCK_DESIGNS>([]);
+  const [generatedDesigns, setGeneratedDesigns] = useState<DesignCard[]>([]);
   const [isGenerating, setIsGenerating] = useState(true);
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -67,6 +69,7 @@ export default function Designs() {
         return;
       }
       setGeneratedDesigns(data.filter((d): d is NonNullable<typeof d> => !!d).map((d) => ({
+        id: d.id,
         name: d.name,
         description: d.description || "",
         imageUrl: d.imageUrl,
@@ -102,7 +105,10 @@ export default function Designs() {
 
   const handleSelect = () => {
     if (selectedDesigns.length === 1) {
-      selectMutation.mutate({ designId: selectedDesigns[0] + 1 });
+      const selectedIndex = selectedDesigns[0];
+      selectMutation.mutate({
+        designId: generatedDesigns[selectedIndex]?.id ?? selectedIndex + 1,
+      });
     }
   };
 

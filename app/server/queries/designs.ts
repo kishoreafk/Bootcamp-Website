@@ -1,6 +1,16 @@
 import { eq, desc, and } from "drizzle-orm";
 import * as schema from "../../db/schema.js";
+import { env } from "../lib/env.js";
 import { getDb } from "./connection.js";
+import {
+  createDemoDesign,
+  findDemoDesignById,
+  getDemoSelectedDesign,
+  listAllDemoDesigns,
+  listDemoDesignsByGarment,
+  listDemoDesignsByUser,
+  selectDemoDesign,
+} from "./demo-store.js";
 
 export async function createDesign(data: {
   garmentId: number;
@@ -10,6 +20,10 @@ export async function createDesign(data: {
   imageUrl: string;
   tags?: string[];
 }) {
+  if (env.isDemoMode) {
+    return createDemoDesign(data);
+  }
+
   const result = await getDb()
     .insert(schema.designs)
     .values({
@@ -25,6 +39,10 @@ export async function createDesign(data: {
 }
 
 export async function findDesignById(id: number) {
+  if (env.isDemoMode) {
+    return findDemoDesignById(id);
+  }
+
   const rows = await getDb()
     .select()
     .from(schema.designs)
@@ -34,6 +52,10 @@ export async function findDesignById(id: number) {
 }
 
 export async function listDesignsByUser(userId: number) {
+  if (env.isDemoMode) {
+    return listDemoDesignsByUser(userId);
+  }
+
   return getDb()
     .select()
     .from(schema.designs)
@@ -42,6 +64,10 @@ export async function listDesignsByUser(userId: number) {
 }
 
 export async function listDesignsByGarment(garmentId: number, userId: number) {
+  if (env.isDemoMode) {
+    return listDemoDesignsByGarment(garmentId, userId);
+  }
+
   return getDb()
     .select()
     .from(schema.designs)
@@ -50,6 +76,10 @@ export async function listDesignsByGarment(garmentId: number, userId: number) {
 }
 
 export async function selectDesign(designId: number, userId: number) {
+  if (env.isDemoMode) {
+    return selectDemoDesign(designId, userId);
+  }
+
   // First deselect all for this user
   await getDb()
     .update(schema.designs)
@@ -66,6 +96,10 @@ export async function selectDesign(designId: number, userId: number) {
 }
 
 export async function getSelectedDesign(userId: number) {
+  if (env.isDemoMode) {
+    return getDemoSelectedDesign(userId);
+  }
+
   const rows = await getDb()
     .select()
     .from(schema.designs)
@@ -75,6 +109,10 @@ export async function getSelectedDesign(userId: number) {
 }
 
 export async function listAllDesigns(limit = 50, offset = 0) {
+  if (env.isDemoMode) {
+    return listAllDemoDesigns(limit, offset);
+  }
+
   return getDb()
     .select()
     .from(schema.designs)

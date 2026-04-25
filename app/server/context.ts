@@ -1,6 +1,8 @@
 import type { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 import type { User } from "../db/schema.js";
+import { env } from "./lib/env.js";
 import { verifyToken } from "./lib/jwt.js";
+import { ensureDemoUserFromToken } from "./queries/demo-store.js";
 import { findUserById } from "./queries/users.js";
 
 export type TrpcContext = {
@@ -26,7 +28,9 @@ export async function createContext(
     if (token) {
       const payload = await verifyToken(token);
       if (payload && payload.userId) {
-        const user = await findUserById(payload.userId);
+        const user =
+          (await findUserById(payload.userId)) ??
+          (env.isDemoMode ? ensureDemoUserFromToken(payload) : undefined);
         if (user) {
           ctx.user = user;
         }

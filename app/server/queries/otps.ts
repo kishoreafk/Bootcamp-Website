@@ -1,8 +1,18 @@
 import { eq, gt, and, desc } from "drizzle-orm";
 import * as schema from "../../db/schema.js";
+import { env } from "../lib/env.js";
 import { getDb } from "./connection.js";
+import {
+  createDemoOTP,
+  findValidDemoOTP,
+  markDemoOTPVerified,
+} from "./demo-store.js";
 
 export async function createOTP(phone: string, code: string, expiresAt: Date) {
+  if (env.isDemoMode) {
+    return createDemoOTP(phone, code, expiresAt);
+  }
+
   const result = await getDb()
     .insert(schema.otps)
     .values({
@@ -15,6 +25,10 @@ export async function createOTP(phone: string, code: string, expiresAt: Date) {
 }
 
 export async function findValidOTP(phone: string, code: string) {
+  if (env.isDemoMode) {
+    return findValidDemoOTP(phone, code);
+  }
+
   const now = new Date();
   const rows = await getDb()
     .select()
@@ -33,6 +47,11 @@ export async function findValidOTP(phone: string, code: string) {
 }
 
 export async function markOTPVerified(id: number) {
+  if (env.isDemoMode) {
+    await markDemoOTPVerified(id);
+    return;
+  }
+
   await getDb()
     .update(schema.otps)
     .set({ verified: 1 })

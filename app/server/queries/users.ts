@@ -1,9 +1,23 @@
 import { eq, desc, sql } from "drizzle-orm";
 import * as schema from "../../db/schema.js";
 import type { InsertUser } from "../../db/schema.js";
+import { env } from "../lib/env.js";
 import { getDb } from "./connection.js";
+import {
+  countDemoUsers,
+  createDemoUser,
+  findDemoUserById,
+  findDemoUserByPhone,
+  listDemoUsers,
+  updateDemoUser,
+  upsertDemoUser,
+} from "./demo-store.js";
 
 export async function findUserByPhone(phone: string) {
+  if (env.isDemoMode) {
+    return findDemoUserByPhone(phone);
+  }
+
   const rows = await getDb()
     .select()
     .from(schema.users)
@@ -13,6 +27,10 @@ export async function findUserByPhone(phone: string) {
 }
 
 export async function findUserById(id: number) {
+  if (env.isDemoMode) {
+    return findDemoUserById(id);
+  }
+
   const rows = await getDb()
     .select()
     .from(schema.users)
@@ -22,6 +40,10 @@ export async function findUserById(id: number) {
 }
 
 export async function createUser(data: { phone: string; name?: string; role?: string }) {
+  if (env.isDemoMode) {
+    return createDemoUser(data);
+  }
+
   const result = await getDb()
     .insert(schema.users)
     .values({
@@ -33,6 +55,11 @@ export async function createUser(data: { phone: string; name?: string; role?: st
 }
 
 export async function updateUser(id: number, data: Partial<InsertUser>) {
+  if (env.isDemoMode) {
+    await updateDemoUser(id, data);
+    return;
+  }
+
   await getDb()
     .update(schema.users)
     .set(data)
@@ -40,6 +67,10 @@ export async function updateUser(id: number, data: Partial<InsertUser>) {
 }
 
 export async function listUsers(limit = 50, offset = 0) {
+  if (env.isDemoMode) {
+    return listDemoUsers(limit, offset);
+  }
+
   return getDb()
     .select()
     .from(schema.users)
@@ -49,6 +80,10 @@ export async function listUsers(limit = 50, offset = 0) {
 }
 
 export async function countUsers() {
+  if (env.isDemoMode) {
+    return countDemoUsers();
+  }
+
   const result = await getDb()
     .select({ count: sql`count(*)` })
     .from(schema.users);
@@ -63,6 +98,11 @@ export async function findUserByUnionId(unionId: string) {
 }
 
 export async function upsertUser(data: Record<string, unknown>) {
+  if (env.isDemoMode) {
+    await upsertDemoUser(data);
+    return;
+  }
+
   const cleanData: Record<string, unknown> = {};
   const validKeys = ["id", "phone", "name", "stylePreference", "preferredFit", "sustainabilityPriority", "role", "createdAt", "updatedAt"];
   for (const key of Object.keys(data)) {
