@@ -30,7 +30,7 @@ export async function findDesignById(id: number) {
     .from(schema.designs)
     .where(eq(schema.designs.id, id))
     .limit(1);
-  return rows.at(0);
+  return rows[0];
 }
 
 export async function listDesignsByUser(userId: number) {
@@ -71,7 +71,7 @@ export async function getSelectedDesign(userId: number) {
     .from(schema.designs)
     .where(and(eq(schema.designs.userId, userId), eq(schema.designs.isSelected, 1)))
     .limit(1);
-  return rows.at(0);
+  return rows[0];
 }
 
 export async function listAllDesigns(limit = 50, offset = 0) {

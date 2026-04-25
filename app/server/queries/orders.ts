@@ -30,7 +30,7 @@ export async function findOrderById(id: number) {
     .from(schema.orders)
     .where(eq(schema.orders.id, id))
     .limit(1);
-  return rows.at(0);
+  return rows[0];
 }
 
 export async function listOrdersByUser(userId: number) {

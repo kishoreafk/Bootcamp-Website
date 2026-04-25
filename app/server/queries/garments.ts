@@ -22,7 +22,7 @@ export async function findGarmentById(id: number) {
     .from(schema.garments)
     .where(eq(schema.garments.id, id))
     .limit(1);
-  return rows.at(0);
+  return rows[0];
 }
 
 export async function listGarmentsByUser(userId: number) {

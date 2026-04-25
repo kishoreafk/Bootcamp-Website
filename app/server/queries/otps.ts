@@ -29,7 +29,7 @@ export async function findValidOTP(phone: string, code: string) {
     )
     .orderBy(desc(schema.otps.createdAt))
     .limit(1);
-  return rows.at(0);
+  return rows[0];
 }
 
 export async function markOTPVerified(id: number) {
